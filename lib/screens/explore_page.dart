@@ -69,7 +69,8 @@ class _ExplorePageState extends State<ExplorePage> {
     final String keyword = _searchController.text.trim().toLowerCase();
 
     return mockAnimals.where((animal) {
-      final bool matchCategory = _selectedCategory == AnimalCategory.all ||
+      final bool matchCategory =
+          _selectedCategory == AnimalCategory.all ||
           animal.category == _selectedCategory;
       if (!matchCategory) {
         return false;
@@ -167,10 +168,16 @@ class _ExplorePageState extends State<ExplorePage> {
                     const SizedBox(height: 16),
                     const Text(
                       '篩選條件',
-                      style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     const SizedBox(height: 14),
-                    const Text('類別', style: TextStyle(fontWeight: FontWeight.w700)),
+                    const Text(
+                      '類別',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -188,7 +195,10 @@ class _ExplorePageState extends State<ExplorePage> {
                       }).toList(),
                     ),
                     const SizedBox(height: 14),
-                    const Text('性別', style: TextStyle(fontWeight: FontWeight.w700)),
+                    const Text(
+                      '性別',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -224,7 +234,10 @@ class _ExplorePageState extends State<ExplorePage> {
                       ],
                     ),
                     const SizedBox(height: 14),
-                    const Text('地區', style: TextStyle(fontWeight: FontWeight.w700)),
+                    const Text(
+                      '地區',
+                      style: TextStyle(fontWeight: FontWeight.w700),
+                    ),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
@@ -402,15 +415,23 @@ class _ExplorePageState extends State<ExplorePage> {
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900),
                   ),
                   const Spacer(),
-                  TextButton(
+                  IconButton(
                     onPressed: () {
                       setState(() {
                         _recommendSeed++;
                       });
                     },
-                    child: const Text('換一批'),
+                    tooltip: '換一批',
+                    icon: const Icon(
+                      Icons.refresh_rounded,
+                      color: AppTheme.primaryButton,
+                    ),
                   ),
-                  TextButton(
+                  FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: AppTheme.primaryButton,
+                      foregroundColor: Colors.white,
+                    ),
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute<void>(
@@ -444,6 +465,22 @@ class _ExplorePageState extends State<ExplorePage> {
                       ),
               ),
             ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Transform.translate(
+        offset: const Offset(0, 12),
+        child: SizedBox(
+          width: 56,
+          height: 56,
+          child: FloatingActionButton(
+            onPressed: () {},
+            backgroundColor: AppTheme.primaryButton,
+            foregroundColor: Colors.white,
+            elevation: 4,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.pets_rounded, size: 22),
           ),
         ),
       ),
@@ -650,7 +687,9 @@ class _AnimalCard extends StatelessWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(14),
+              ),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -658,7 +697,11 @@ class _AnimalCard extends StatelessWidget {
                   const Positioned(
                     right: 8,
                     top: 8,
-                    child: Icon(Icons.favorite_border, color: Colors.white, size: 22),
+                    child: Icon(
+                      Icons.favorite_border,
+                      color: Colors.white,
+                      size: 22,
+                    ),
                   ),
                 ],
               ),
@@ -691,8 +734,14 @@ class _AnimalCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                Text(animal.ageText, style: const TextStyle(color: Colors.black54)),
-                Text(animal.location, style: const TextStyle(color: Colors.black54)),
+                Text(
+                  animal.ageText,
+                  style: const TextStyle(color: Colors.black54),
+                ),
+                Text(
+                  animal.location,
+                  style: const TextStyle(color: Colors.black54),
+                ),
               ],
             ),
           ),
@@ -707,18 +756,82 @@ class _BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: 0,
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: AppTheme.primaryButton,
-      unselectedItemColor: Colors.black45,
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: '首頁'),
-        BottomNavigationBarItem(icon: Icon(Icons.location_on_outlined), label: '地圖'),
-        BottomNavigationBarItem(icon: Icon(Icons.pets), label: '配對'),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite_border), label: '收藏'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '我的'),
+    return BottomAppBar(
+      color: const Color(0xFFF9F7F4),
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 7,
+      elevation: 6,
+      child: SizedBox(
+        height: 74,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: const [
+            _NavItem(icon: Icons.home_filled, label: '首頁', selected: true),
+            _NavItem(icon: Icons.location_on_outlined, label: '地圖'),
+            _CenterNavLabel(label: '配對'),
+            _NavItem(icon: Icons.favorite_border, label: '收藏'),
+            _NavItem(icon: Icons.person_outline, label: '我的'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  const _NavItem({
+    required this.icon,
+    required this.label,
+    this.selected = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = selected
+        ? AppTheme.primaryButton
+        : const Color(0xFF8E8E8E);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 24, color: color),
+        const SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: color,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ],
+    );
+  }
+}
+
+class _CenterNavLabel extends StatelessWidget {
+  const _CenterNavLabel({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 64,
+      child: Align(
+        alignment: const Alignment(0, 0.82),
+        child: Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Color(0xFF6F6F6F),
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
     );
   }
 }
