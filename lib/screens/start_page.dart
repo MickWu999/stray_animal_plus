@@ -1,6 +1,9 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+
 import '../app_theme.dart';
+import 'explore_page.dart';
 
 class StartPage extends StatefulWidget {
   const StartPage({super.key});
@@ -28,7 +31,11 @@ class _StartPageState extends State<StartPage> {
     _selectedDogImage = _dogImages[Random().nextInt(_dogImages.length)];
   }
 
-  void _onExplorePressed() {}
+  void _onExplorePressed() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (context) => const ExplorePage()));
+  }
 
   void _onLoginPressed() {}
 
@@ -43,13 +50,8 @@ class _StartPageState extends State<StartPage> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _DogBackground(
-              imagePath: _selectedDogImage,
-              top: imageTop,
-            ),
-            _FadeOverlay(
-              top: imageTop - 180,
-            ),
+            _DogBackground(imagePath: _selectedDogImage, top: imageTop),
+            _FadeOverlay(top: imageTop - 180),
             SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
@@ -101,10 +103,7 @@ class _StartPageState extends State<StartPage> {
                       ),
                     ),
                     const SizedBox(height: 18),
-                    _PrimaryButton(
-                      label: '開始探索',
-                      onPressed: _onExplorePressed,
-                    ),
+                    _PrimaryButton(label: '開始探索', onPressed: _onExplorePressed),
                     const SizedBox(height: 12),
                     _SecondaryButton(
                       label: '登入 / 註冊',
