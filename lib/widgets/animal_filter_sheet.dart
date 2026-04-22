@@ -4,10 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../app_theme.dart';
 import '../models/animal.dart';
 import '../providers/animal_browser_provider.dart';
+import 'app_ui.dart';
 
 Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
   final browserState = ref.read(animalBrowserProvider);
-  final cityOptions = ref.read(cityOptionsProvider);
+  final cityOptions = ref.read(cityOptionsProvider).value ?? const <String>[];
 
   AnimalFilterCategory tempCategory = browserState.category;
   String? tempGender = browserState.gender;
@@ -27,9 +28,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
             top: false,
             child: Padding(
               padding: EdgeInsets.fromLTRB(
+                AppResponsive.pageInset(context),
                 16,
-                16,
-                16,
+                AppResponsive.pageInset(context),
                 16 + MediaQuery.of(context).viewInsets.bottom,
               ),
               child: Column(
@@ -47,9 +48,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     '篩選條件',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 14),
                   const Text(
@@ -64,6 +65,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                       return ChoiceChip(
                         label: Text(filterCategoryLabel(category)),
                         selected: tempCategory == category,
+                        selectedColor: AppTheme.surfaceSoft,
+                        backgroundColor: AppTheme.surface,
+                        side: const BorderSide(color: AppTheme.border),
                         onSelected: (_) {
                           setSheetState(() {
                             tempCategory = category;
@@ -85,6 +89,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                       ChoiceChip(
                         label: const Text('不限'),
                         selected: tempGender == null,
+                        selectedColor: AppTheme.surfaceSoft,
+                        backgroundColor: AppTheme.surface,
+                        side: const BorderSide(color: AppTheme.border),
                         onSelected: (_) {
                           setSheetState(() {
                             tempGender = null;
@@ -94,6 +101,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                       ChoiceChip(
                         label: const Text('公'),
                         selected: tempGender == '公',
+                        selectedColor: const Color(0xFFEAF2FF),
+                        backgroundColor: AppTheme.surface,
+                        side: const BorderSide(color: AppTheme.border),
                         onSelected: (_) {
                           setSheetState(() {
                             tempGender = '公';
@@ -103,6 +113,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                       ChoiceChip(
                         label: const Text('母'),
                         selected: tempGender == '母',
+                        selectedColor: const Color(0xFFFFEEF3),
+                        backgroundColor: AppTheme.surface,
+                        side: const BorderSide(color: AppTheme.border),
                         onSelected: (_) {
                           setSheetState(() {
                             tempGender = '母';
@@ -124,6 +137,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                       ChoiceChip(
                         label: const Text('全部地區'),
                         selected: tempCity == null,
+                        selectedColor: AppTheme.surfaceSoft,
+                        backgroundColor: AppTheme.surface,
+                        side: const BorderSide(color: AppTheme.border),
                         onSelected: (_) {
                           setSheetState(() {
                             tempCity = null;
@@ -134,6 +150,9 @@ Future<void> showAnimalFilterSheet(BuildContext context, WidgetRef ref) async {
                         return ChoiceChip(
                           label: Text(city),
                           selected: tempCity == city,
+                          selectedColor: AppTheme.surfaceSoft,
+                          backgroundColor: AppTheme.surface,
+                          side: const BorderSide(color: AppTheme.border),
                           onSelected: (_) {
                             setSheetState(() {
                               tempCity = city;

@@ -17,7 +17,7 @@ class AppBottomNav extends StatelessWidget {
     return BottomAppBar(
       height: 74,
       padding: const EdgeInsets.symmetric(horizontal: 18),
-      color: Colors.white,
+      color: AppTheme.surface,
       shape: const CircularNotchedRectangle(),
       notchMargin: 8,
       child: Row(
@@ -69,7 +69,7 @@ class _BottomNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppTheme.primaryButton : Colors.black45;
+    final color = selected ? AppTheme.primaryButton : AppTheme.subText;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),

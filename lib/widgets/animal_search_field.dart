@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../app_theme.dart';
 import '../providers/animal_browser_provider.dart';
 
 class AnimalSearchField extends ConsumerStatefulWidget {
@@ -51,10 +52,18 @@ class _AnimalSearchFieldState extends ConsumerState<AnimalSearchField> {
         hintText: widget.hintText,
         prefixIcon: const Icon(Icons.search),
         filled: true,
-        fillColor: Colors.white,
+        fillColor: AppTheme.surface,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppTheme.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppTheme.primaryButton),
         ),
         contentPadding: const EdgeInsets.symmetric(vertical: 0),
       ),

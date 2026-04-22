@@ -208,6 +208,8 @@ class Animal {
 
 enum AnimalFilterCategory { all, dog, cat, other }
 
+enum HomeAnimalsSection { recommend, newArrival, waiting, shelter }
+
 extension AnimalX on Animal {
   String get sexText {
     switch (animalSex) {
@@ -216,9 +218,9 @@ extension AnimalX on Animal {
       case 'F':
         return '母';
       case 'N':
-        return '未知';
+        return '未標示';
       default:
-        return '未知';
+        return '未標示';
     }
   }
 
@@ -246,6 +248,20 @@ extension AnimalX on Animal {
     }
   }
 
+  String get bodyTypePetText {
+    final suffix = animalKind == '狗' ? '犬' : '';
+    switch (animalBodytype) {
+      case 'SMALL':
+        return '小型$suffix';
+      case 'MEDIUM':
+        return '中型$suffix';
+      case 'BIG':
+        return '大型$suffix';
+      default:
+        return bodyTypeText;
+    }
+  }
+
   String get statusText {
     switch (animalStatus) {
       case 'NONE':
@@ -266,6 +282,33 @@ extension AnimalX on Animal {
   bool get isSterilized => animalSterilization == 'T';
   bool get isVaccinated => animalBacterin == 'T';
   bool get hasImage => (albumFile ?? '').isNotEmpty;
+
+  String get sterilizationText {
+    switch (animalSterilization) {
+      case 'T':
+        return '已絕育';
+      case 'F':
+        return '未絕育';
+      case 'N':
+        return '未提供';
+      default:
+        return '未提供';
+    }
+  }
+
+  String get bacterinText {
+    switch (animalBacterin) {
+      case 'T':
+        return '已施打狂犬病疫苗';
+      case 'F':
+        return '未施打狂犬病疫苗';
+      case 'N':
+        return '未提供';
+      default:
+        return '未提供';
+    }
+  }
+
   String get displayName {
     if ((animalTitle ?? '').isNotEmpty) {
       return animalTitle!;
@@ -274,6 +317,17 @@ extension AnimalX on Animal {
       return animalVariety!;
     }
     return '等待認養的毛孩';
+  }
+
+  String get headlineTitle {
+    final parts = <String>[
+      if ((animalColour ?? '').isNotEmpty) animalColour!,
+      if ((animalVariety ?? '').isNotEmpty) animalVariety!,
+    ];
+    if (parts.isNotEmpty) {
+      return parts.join();
+    }
+    return displayName;
   }
 
   AnimalFilterCategory get filterCategory {
@@ -371,5 +425,72 @@ extension AnimalX on Animal {
       final String text = (value ?? '').toLowerCase();
       return text.contains(normalizedKeyword);
     });
+  }
+
+  String get sourceLocationText {
+    if ((animalFoundplace ?? '').isNotEmpty) {
+      return '發現地：$animalFoundplace';
+    }
+    if ((animalPlace ?? '').isNotEmpty) {
+      return '收容地：$animalPlace';
+    }
+    return '來源地待更新';
+  }
+
+  String? get notePreview {
+    final text = animalRemark ?? animalCaption;
+    if ((text ?? '').isEmpty) {
+      return null;
+    }
+    return text;
+  }
+
+  bool get isOpenForAdoption => animalStatus == 'OPEN';
+
+  DateTime? get createDate => _parseDate(animalCreatetime);
+  DateTime? get openDate => _parseDate(animalOpendate);
+  DateTime? get lastUpdateDate =>
+      _parseDate(animalUpdate) ?? _parseDate(cDate) ?? _parseDate(albumUpdate);
+
+  int? get daysSinceCreate => _daysSince(createDate);
+  int? get daysSinceOpen => _daysSince(openDate);
+  int? get daysSinceUpdate => _daysSince(lastUpdateDate);
+
+  String get stayDurationLabel => '來園 ${daysSinceCreate ?? 0} 天';
+  String get adoptionDurationLabel => '開放認養 ${daysSinceOpen ?? 0} 天';
+  String get updateDurationLabel => '${daysSinceUpdate ?? 0} 天前更新';
+
+  String get createDateLabel => _formatDate(createDate);
+  String get openDateLabel => _formatDate(openDate);
+  String get updateDateLabel => _formatDate(lastUpdateDate);
+
+  bool get isRecentArrival => (daysSinceCreate ?? 9999) <= 7;
+
+  static DateTime? _parseDate(String? raw) {
+    if ((raw ?? '').isEmpty) {
+      return null;
+    }
+    final normalized = raw!.replaceAll('/', '-');
+    return DateTime.tryParse(normalized);
+  }
+
+  static int? _daysSince(DateTime? date) {
+    if (date == null) {
+      return null;
+    }
+    final now = DateTime.now();
+    final normalizedNow = DateTime(now.year, now.month, now.day);
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    return normalizedNow.difference(normalizedDate).inDays.clamp(0, 99999);
+  }
+
+  static String _formatDate(DateTime? date) {
+    if (date == null) {
+      return '--';
+    }
+    final year = date.year.toString().padLeft(4, '0');
+    final month = date.month.toString().padLeft(2, '0');
+    final day = date.day.toString().padLeft(2, '0');
+    return '$year/$month/$day';
   }
 }
