@@ -5,8 +5,8 @@ import '../models/animal.dart';
 class AnimalApiService {
   AnimalApiService({Dio? dio}) : _dio = dio ?? _sharedDio;
 
-  static const String endpoint =
-      'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL';
+  static const String endpoint ='fake';
+      // 'https://data.moa.gov.tw/Service/OpenData/TransService.aspx?UnitId=QcbUEzN6E6DL';
   static final Dio _sharedDio = _buildDio();
   static const Duration _cacheTtl = Duration(minutes: 10);
   static List<Animal>? _memoryCache;

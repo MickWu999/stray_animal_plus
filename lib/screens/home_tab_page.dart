@@ -107,6 +107,7 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
   @override
   Widget build(BuildContext context) {
     final animalsAsync = ref.watch(animalFeedProvider);
+    final homeSectionsAsync = ref.watch(homeSectionsProvider);
 
     return SafeArea(
       child: animalsAsync.when(
@@ -124,7 +125,15 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
                 a.lastUpdateDate ?? DateTime(1900),
               ),
             );
-          final featuredAnimals = recentAnimals.take(3).toList(growable: false);
+          final featuredAnimals = homeSectionsAsync.maybeWhen(
+            data: (sections) {
+              if (sections.dailyFate.isNotEmpty) {
+                return sections.dailyFate.take(6).toList(growable: false);
+              }
+              return recentAnimals.take(3).toList(growable: false);
+            },
+            orElse: () => recentAnimals.take(3).toList(growable: false),
+          );
           final openCount = adoptableAnimals.length;
           final recentCount = adoptableAnimals
               .where((animal) => (animal.daysSinceCreate ?? 9999) <= 7)
@@ -252,8 +261,8 @@ class _HomeTabPageState extends ConsumerState<HomeTabPage> {
                       children: [
                         const Expanded(
                           child: AppSectionHeader(
-                            title: '首頁精選',
-                            subtitle: '先看幾隻近期更新的孩子。',
+                            title: '今日有緣分',
+                            subtitle: '這批孩子直接來自後端首頁推薦資料。',
                           ),
                         ),
                         TextButton(

@@ -2,14 +2,31 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/animal_api_service.dart';
 import '../data/mock_animals_gov.dart';
+import '../data/supabase_animal_service.dart';
 import '../models/animal.dart';
+import '../config/supabase_config.dart';
+import '../models/home_sections.dart';
 import '../state/animal_browser_state.dart';
 
 final animalApiServiceProvider = Provider<AnimalApiService>((ref) {
   return AnimalApiService();
 });
 
+final supabaseAnimalServiceProvider = Provider<SupabaseAnimalService>((ref) {
+  return SupabaseAnimalService();
+});
+
 final animalFeedProvider = FutureProvider<List<Animal>>((ref) async {
+  if (SupabaseConfig.isConfigured) {
+    final supabase = ref.watch(supabaseAnimalServiceProvider);
+    try {
+      final animals = await supabase.fetchAnimals();
+      if (animals.isNotEmpty) {
+        return animals;
+      }
+    } catch (_) {}
+  }
+
   final api = ref.watch(animalApiServiceProvider);
   try {
     final animals = await api.fetchAnimals();
@@ -22,6 +39,14 @@ final animalFeedProvider = FutureProvider<List<Animal>>((ref) async {
 
 final animalRepositoryProvider = Provider<AsyncValue<List<Animal>>>((ref) {
   return ref.watch(animalFeedProvider);
+});
+
+final homeSectionsProvider = FutureProvider<HomeSections>((ref) async {
+  if (!SupabaseConfig.isConfigured) {
+    return const HomeSections.empty();
+  }
+  final supabase = ref.watch(supabaseAnimalServiceProvider);
+  return supabase.fetchHomeSections();
 });
 
 class AnimalBrowserNotifier extends Notifier<AnimalBrowserState> {
